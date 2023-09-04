@@ -34,6 +34,11 @@ end
 function M.openTodaysDaily()
     local todayNote = os.date('%Y-%m-%d') .. ".md"
     vim.cmd(':e ' .. M.path .. todayNote)
+
+    -- Use daily snippet if the file is empty
+    if (vim.line('$') == 1 and vim.getline(1) == '') then
+        require'luasnip'.snip_expand('daily')
+    end
 end
 
 -- when on a daily note file, returns the next daily note
@@ -69,6 +74,11 @@ function M.getNextDaily(direction)
 
     local nextDayNote = nextDay .. '.md'
     vim.cmd(':e ' .. M.path .. nextDayNote)
+
+    -- Use daily snippet if the file is empty
+    if (vim.line('$') == 1 and vim.getline(1) == '') then
+        require'luasnip'.snip_expand('daily')
+    end
 end
 
 
