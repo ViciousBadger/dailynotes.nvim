@@ -36,7 +36,8 @@ function M.openTodaysDaily()
     vim.cmd(':e ' .. M.path .. todayNote)
 
     -- Use daily snippet if the file is empty
-    if (vim.line('$') == 1 and vim.getline(1) == '') then
+    local buf = vim.api.nvim_get_current_buf()
+    if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
         require'luasnip'.snip_expand('daily')
     end
 end
@@ -76,7 +77,8 @@ function M.getNextDaily(direction)
     vim.cmd(':e ' .. M.path .. nextDayNote)
 
     -- Use daily snippet if the file is empty
-    if (vim.line('$') == 1 and vim.getline(1) == '') then
+    local buf = vim.api.nvim_get_current_buf()
+    if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
         require'luasnip'.snip_expand('daily')
     end
 end
