@@ -30,6 +30,15 @@ function M.setup(opts)
     end
 end
 
+local function getSnipByName(lang, name)
+    local langTable = require'luasnip'.snippets[lang]
+    if langTable == nil then return end
+
+    for _, snip in pairs(langTable) do
+        if snip ~= nil and snip.name == name then return snip end
+    end
+end
+
 -- gets todays daily note
 function M.openTodaysDaily()
     local todayNote = os.date('%Y-%m-%d') .. ".md"
@@ -38,7 +47,7 @@ function M.openTodaysDaily()
     -- Use daily snippet if the file is empty
     local buf = vim.api.nvim_get_current_buf()
     if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
-        require'luasnip'.snip_expand('daily')
+        require'luasnip'.snip_expand(getSnipByName('markdown', 'daily'))
     end
 end
 
@@ -79,7 +88,7 @@ function M.getNextDaily(direction)
     -- Use daily snippet if the file is empty
     local buf = vim.api.nvim_get_current_buf()
     if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
-        require'luasnip'.snip_expand('daily')
+        require'luasnip'.snip_expand(getSnipByName('markdown', 'daily'))
     end
 end
 
