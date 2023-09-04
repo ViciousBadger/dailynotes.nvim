@@ -31,7 +31,7 @@ function M.setup(opts)
 end
 
 local function getSnipByName(lang, name)
-    local langTable = require'luasnip'.snippets[lang]
+    local langTable = require'luasnip'.get_snippets(lang)
     if langTable == nil then return end
 
     for _, snip in pairs(langTable) do
