@@ -71,7 +71,7 @@ function M.getNextDaily(direction)
         return
     end
     -- return if going forward and current daily note is todays note (latest note)
-    if !M.allow_future_notes and direction > 0 and fileName == os.date("%Y-%m-%d") then
+    if (not M.allow_future_notes) and direction > 0 and fileName == os.date("%Y-%m-%d") then
         vim.notify('Reached latest daily note')
         return
     end
