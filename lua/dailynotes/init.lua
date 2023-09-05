@@ -10,7 +10,7 @@ M.notifications = true
 -- allow going past today's date
 M.allow_future_notes = false
 -- event to fire when an empty daily note is opened
-M.on_empty_note_open = function (_) end
+M.on_empty_note_open = function (_, _) end
 
 local function notify(msg)
     if M.notifications then
@@ -48,7 +48,7 @@ function M.openTodaysDaily()
     -- Run function if the file is empty
     local buf = vim.api.nvim_get_current_buf()
     if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
-        M.on_empty_note_open(buf)
+        M.on_empty_note_open(buf, os.time())
     end
 end
 
@@ -89,7 +89,7 @@ function M.getNextDaily(direction)
     -- Use daily snippet if the file is empty
     local buf = vim.api.nvim_get_current_buf()
     if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
-        M.on_empty_note_open(buf)
+        M.on_empty_note_open(buf, nextDayAsTime)
     end
 end
 
