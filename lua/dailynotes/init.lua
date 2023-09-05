@@ -7,6 +7,10 @@ M.path = ''
 M.legacy = false
 -- notifications from dailynotes by default enabled
 M.notifications = true
+-- allow going past today's date
+M.allow_future_notes = false
+-- event to fire when an empty daily note is opened
+M.on_empty_note_open = function (_) end
 
 local function notify(msg)
     if M.notifications then
@@ -24,18 +28,15 @@ function M.setup(opts)
     if opts.notifications == false then
         M.notifications = opts.notifications
     end
+    if opts.allow_future_notes == true then
+        M.allow_future_notes = opts.allow_future_notes
+    end
+    if opts.on_empty_note_open then
+        M.on_empty_note_open = opts.on_empty_note_open
+    end
 
     if M.legacy then
         M.setLegacyCommands(opts)
-    end
-end
-
-local function getSnipByName(lang, name)
-    local langTable = require'luasnip'.get_snippets(lang)
-    if langTable == nil then return end
-
-    for _, snip in pairs(langTable) do
-        if snip ~= nil and snip.name == name then return snip end
     end
 end
 
@@ -44,10 +45,10 @@ function M.openTodaysDaily()
     local todayNote = os.date('%Y-%m-%d') .. ".md"
     vim.cmd(':e ' .. M.path .. todayNote)
 
-    -- Use daily snippet if the file is empty
+    -- Run function if the file is empty
     local buf = vim.api.nvim_get_current_buf()
     if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
-        require'luasnip'.snip_expand(getSnipByName('markdown', 'daily'))
+        M.on_empty_note_open(buf)
     end
 end
 
@@ -70,7 +71,7 @@ function M.getNextDaily(direction)
         return
     end
     -- return if going forward and current daily note is todays note (latest note)
-    if direction > 0 and fileName == os.date("%Y-%m-%d") then
+    if !M.allow_future_notes and direction > 0 and fileName == os.date("%Y-%m-%d") then
         vim.notify('Reached latest daily note')
         return
     end
@@ -88,7 +89,7 @@ function M.getNextDaily(direction)
     -- Use daily snippet if the file is empty
     local buf = vim.api.nvim_get_current_buf()
     if (vim.api.nvim_buf_line_count(buf) == 1 and vim.api.nvim_get_current_line() == '') then
-        require'luasnip'.snip_expand(getSnipByName('markdown', 'daily'))
+        M.on_empty_note_open(buf)
     end
 end
 
